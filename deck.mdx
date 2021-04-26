@@ -3,143 +3,580 @@ import {
   CodeSurferColumns,
   Step,
 } from "code-surfer";
-import { github, vsDark } from "@code-surfer/themes";
+import { github, vsDark, dracula } from "@code-surfer/themes";
 
-export const theme = vsDark;
+export const theme = dracula;
 
-# Hello 👋
+## Comunicação entre componentes com vue.js :telephone_receiver:
 
-You are using [MDX Deck](https://github.com/jxnblk/mdx-deck) and [Code Surfer](https://codesurfer.pomb.us)
+Uma breve introdução ao tema
+
+---
+<CodeSurfer>
+
+```html title='Base de um componente'
+
+<template>
+  <div> Hello </div>
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'signIn',
+  };
+</script>
+
+```
+
+```js
+<template>
+  <div> Hello </div>
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'signIn',
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+  };
+</script>
+```
+
+```html
+<template>
+  <div> {{ title }} </div>
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'signIn',
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+  };
+</script>
+```
+
+```html
+<template>
+  <div> {{ title }} </div>
+  <v-form ref="formSignIn" v-model="valid">
+    <v-text-field
+      v-model='firstName'
+      label='Nome'
+    />
+  </v-form>
+  Bem vindo, {{ firstName }}!
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'signIn',
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+  };
+</script>
+```
+</CodeSurfer>
 
 ---
 
 <CodeSurfer>
 
-```js title="This is a title" subtitle="and this a subtitle"
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
+```html title='Novo componente filho'
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+  />
+</template>
 
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+  };
+</script>
 ```
 
-```js
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
+```html
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+    @change='handleCep'
+  />
+</template>
 
-function adipiscing(...elit) {
-  if (!elit.sit) {
-    return [];
-  }
-
-  const sed = elit[0];
-  return eiusmod.tempor(sed) ? sed : [sed];
-}
-
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+  };
+</script>
 ```
 
-```diff 1[10:14],2[15:19],3[22:27],10:12
+```html
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+    @change='handleCep'
+  />
+</template>
 
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      handleCep(value) {
+        this.checkCep();
+      },
+      checkCep() {
+        ...
+      },
+    },
+  };
+</script>
+```
+
+```html
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+    @change='handleCep'
+  />
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      handleCep(value) {
+        this.checkCep();
+        this.$emit('cepValues', value);
+      },
+      checkCep() {
+        ...
+      },
+    },
+  };
+</script>
 ```
 
 </CodeSurfer>
 
 ---
 
-<CodeSurferColumns themes={[vsDark, github]}>
+<CodeSurferColumns themes={[dracula, dracula]}>
 
-<Step>
+<Step title='Usando .$emit'>
 
-```js
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
+```html subtitle='1'
+<template>
+  <div> {{ title }} </div>
+  <v-form ref="formSignIn" v-model="valid">
+    <v-text-field
+      v-model='firstName'
+      label='Nome'
+    />
+  </v-form>
+  Bem vindo, {{ firstName }}!
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'signIn',
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+  };
+</script>
 ```
 
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
+```html subtitle='2'
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+    @change='handleCep'
+  />
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      handleCep(value) {
+        this.checkCep();
+        this.$emit('cepValues', value);
+      },
+      checkCep() {
+        ...
+      },
+    },
+  };
+</script>
 ```
 
 </Step>
 
 <Step>
 
-```js
-const lorem = (ipsum, dolor, sit) => {
-  const amet = dolor - ipsum;
-  return consectetur.adipiscing(
-    {
-      elit: sed.eiusmod(sit - dolor) / amet + 2,
-    },
-    (tempor, incididunt) => ipsum + amet * incididunt
-  );
-};
+```html subtitle='1'
+<template>
+  <div> {{ title }} </div>
+  <v-form ref="formSignIn" v-model="valid">
+    <v-text-field
+      v-model='firstName'
+      label='Nome'
+    />
+    <cep-input
+      :name='firstName'
+    />
+  </v-form>
+</template>
 
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
+<script lang="ts">
+import CepInput from '@/cepInput'
+  export default {
+    name: 'signIn',
+    components:{
+      CepInput,
+    },
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+  };
+</script>
 ```
 
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
+```html subtitle='2'
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+    @change='handleCep'
+  />
+</template>
 
-const sed = (eiusmod, tempor, incididunt) => {
-  const ut = tempor - eiusmod;
-  return labore.et(
-    {
-      amet: dolore.magna(incididunt - tempor) / ut + 2,
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
     },
-    (aliqua, elit) => eiusmod + ut * elit
-  );
-};
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      handleCep(value) {
+        this.checkCep();
+        this.$emit('cepValues', value);
+      },
+      checkCep() {
+        ...
+      },
+    },
+  };
+</script>
+```
+
+</Step>
+
+<Step>
+
+```html subtitle='1'
+<template>
+  <div> {{ title }} </div>
+  <v-form ref="formSignIn" v-model="valid">
+    <v-text-field
+      v-model='firstName'
+      label='Nome'
+    />
+    <cep-input
+      :name='firstName'
+      @cepValues='saveCepValue'
+    />
+  </v-form>
+</template>
+
+<script lang="ts">
+import CepInput from '@/cepInput'
+  export default {
+    name: 'signIn',
+    components:{
+      CepInput,
+    },
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+    methods: {
+      saveCepValue(value) {
+        this.doSomething(value);
+      },
+    },
+  };
+</script>
+```
+
+```html subtitle='2'
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+    @change='handleCep'
+  />
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      handleCep(value) {
+        this.checkCep();
+        this.$emit('cepValues', value);
+      },
+      checkCep() {
+        ...
+      },
+    },
+  };
+</script>
+```
+
+</Step>
+
+<Step title='Usando .$refs'>
+
+```html subtitle='1'
+<template>
+  <div> {{ title }} </div>
+  <v-form ref="formSignIn" v-model="valid">
+    <v-text-field
+      v-model='firstName'
+      label='Nome'
+    />
+    <cep-input
+      :name='firstName'
+      ref='cepInput'
+    />
+    <v-btn
+      label='save'
+      @click='saveForm'
+    />
+  </v-form>
+</template>
+
+<script lang="ts">
+import CepInput from '@/cepInput'
+  export default {
+    name: 'signIn',
+    components:{
+      CepInput,
+    },
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+    methods: {
+      saveCepValue(value) {
+        this.doSomething(value);
+      },
+    },
+  };
+</script>
+```
+
+```html subtitle='2'
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+  />
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      checkCep() {
+        ...
+      },
+    },
+  };
+</script>
+```
+
+</Step>
+
+<Step>
+
+```html subtitle='1'
+<template>
+  <div> {{ title }} </div>
+  <v-form ref="formSignIn" v-model="valid">
+    <v-text-field
+      v-model='firstName'
+      label='Nome'
+    />
+    <cep-input
+      :name='firstName'
+      ref='cepInput'
+    />
+    <v-btn
+      label='save'
+      @click='saveForm'
+    />
+  </v-form>
+</template>
+
+<script lang="ts">
+import CepInput from '@/cepInput'
+  export default {
+    name: 'signIn',
+    components:{
+      CepInput,
+    },
+    props: {
+      title: String,
+    },
+    data() {
+      return {
+        firstName: null,
+      }
+    },
+    methods: {
+      saveForm() {
+        const cepCheck = this.$refs.cepInput.checkCep();
+        if(cepCheck) {
+          this.doSomething();
+        },
+      },
+    },
+  };
+</script>
+```
+
+```html subtitle='2'
+<template>
+  <v-text-field
+    v-model='cep'
+    label='CEP'
+  />
+</template>
+
+<script lang="ts">
+  export default {
+    name: 'cepInput',
+    props: {
+      name: String,
+    },
+    data() {
+      return {
+        cep: null,
+      }
+    },
+    methods: {
+      checkCep() {
+        return cepIsValid(); 
+      },
+    },
+  };
+</script>
 ```
 
 </Step>
@@ -148,5 +585,10 @@ const sed = (eiusmod, tempor, incididunt) => {
 
 ---
 
-docs:  
-[codesurfer.pomb.us](https://codesurfer.pomb.us)
+Alguns links uteis:
+
+[Vuetify V15](https://v15.vuetifyjs.com/) 👨🏽‍🎨
+
+[Underscore js](https://underscorejs.org/) 🔨
+
+[Moment js](https://momentjs.com/) ⏰
